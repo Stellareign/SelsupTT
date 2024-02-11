@@ -1,6 +1,6 @@
 [![Typing SVG](https://readme-typing-svg.herokuapp.com?color=%2336BCF7&lines=Selsup+Test+Task)](https://git.io/typing-svg)
 <br />
-УСЛОВИЕ (кратко)
+УСЛОВИЕ (кратко):
 <br />
 Необходимо реализовать на языке Java (можно использовать 17 версию) класс для работы с API Честного знака. Класс должен быть thread-safe и поддерживать ограничение на количество запросов к API. Ограничение указывается в конструкторе в виде количества запросов в определенный интервал времени. Например:
 public CrptApi(TimeUnit timeUnit, int requestLimit)
