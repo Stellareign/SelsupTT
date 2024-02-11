@@ -72,8 +72,8 @@ public class CrptApi {
 
     //**********************************************************************************************
     private static String URL
-//            = "https://ismp.crpt.ru/api/v3/lk/documents/create";
-            = "https://postman-echo.com/post"; // тест клиента
+            = "https://ismp.crpt.ru/api/v3/lk/documents/create";
+//            = "https://postman-echo.com/post"; // тест клиента
 
     HttpClient client = HttpClient.newHttpClient();
     //**********************************************************************************************
@@ -86,8 +86,8 @@ public class CrptApi {
      * @param signature   строка, представляющая собой подпись для авторизации
      */
     public void createDoc(DocumentDTO documentDTO, String signature) {
+        lock.lock();
         try {
-            lock.lock();
             while (requestCounter.get() >= requestLimit) { // пока счётчик больше или равен лимиту
                 try {
                     if (!condition.await(intervalMillis, TimeUnit.MILLISECONDS)) {
@@ -113,14 +113,14 @@ public class CrptApi {
                     System.out.println("Ваш документ создан. HTTP Status Code: " + response.statusCode());
                     System.out.println("Response Body: " + response.body());
                 } else {
-                    System.err.println("При создании документа возникла ошибка. HTTP Status Code: " + response.statusCode() +
+                    System.err.println("Возникла ошибка. HTTP Status Code: " + response.statusCode() +
                             "\n Повторите попытку или обратитесь в службу поддержки.");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
             requestCounter.incrementAndGet(); // увеличиваем счётчик
-            condition.signal(); // вызываем signal() после увеличения счётчика запросов
+            condition.signalAll(); // вызываем signal() после увеличения счётчика запросов
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             e.printStackTrace();
