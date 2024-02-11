@@ -86,8 +86,8 @@ public class CrptApi {
      * @param signature   строка, представляющая собой подпись для авторизации
      */
     public void createDoc(DocumentDTO documentDTO, String signature) {
-        lock.lock();
         try {
+            lock.lock();
             while (requestCounter.get() >= requestLimit) { // пока счётчик больше или равен лимиту
                 try {
                     if (!condition.await(intervalMillis, TimeUnit.MILLISECONDS)) {
@@ -109,19 +109,21 @@ public class CrptApi {
             HttpResponse<String> response = null;
             try {
                 response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            } catch (IOException | InterruptedException e) {
+                if (response != null && (response.statusCode() == 200 || response.statusCode() == 201)) {
+                    System.out.println("Ваш документ создан. HTTP Status Code: " + response.statusCode());
+                    System.out.println("Response Body: " + response.body());
+                } else {
+                    System.err.println("При создании документа возникла ошибка. HTTP Status Code: " + response.statusCode() +
+                            "\n Повторите попытку или обратитесь в службу поддержки.");
+                }
+            } catch (IOException e) {
                 e.printStackTrace();
-            }
-            assert response != null;
-            if (response.statusCode() == 200 || response.statusCode() == 201) {
-                System.out.println("Ваш документ создан. HTTP Status Code: " + response.statusCode());
-                System.out.println("Response Body: " + response.body());
-            } else {
-                System.err.println("При создании документа возникла ошибка. HTTP Status Code: " + response.statusCode() +
-                        "\n Повторите попытку или обратитесь в службу поддержки.");
             }
             requestCounter.incrementAndGet(); // увеличиваем счётчик
             condition.signal(); // вызываем signal() после увеличения счётчика запросов
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            e.printStackTrace();
         } finally { // освобождение блокировки после выполнения операций метода
             lock.unlock();
         }
@@ -174,7 +176,7 @@ public class CrptApi {
         }
 
         /**
-         * Метод для оздания документа через маппер из DocumentDTO
+         * Метод для создания документа через маппер из DocumentDTO
          *
          * @param documentDTO
          * @return
@@ -204,8 +206,8 @@ public class CrptApi {
             mapper.fromDtoToDocument(documentDTO);
             return true;
         }
-
     }
+
     //******************************************************************************************************************
 //********************************** Mapper ****************************************************************************
     private class Mapper {
@@ -348,7 +350,8 @@ public class CrptApi {
                 documentDTO.getReg_number()
         );
     }
-//**********************************************************************************************************************
+
+    //**********************************************************************************************************************
     //************************************************ DTO *************************************************************
     @Data
     @AllArgsConstructor
