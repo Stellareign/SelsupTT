@@ -31,7 +31,6 @@ import java.util.concurrent.locks.ReentrantLock;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class CrptApi {
-
     public static void main(String[] args) {
 
         String signature = "L123456789XXD";
@@ -43,7 +42,7 @@ public class CrptApi {
                 "87-4567899", "2020-01-23", "dress", products,
                 "2020-01-23", "123456789");
 
-        CrptApi crptApi = new CrptApi(TimeUnit.MILLISECONDS, 10, 10);
+        CrptApi crptApi = new CrptApi(TimeUnit.MILLISECONDS, 10, 100);
         crptApi.createDoc(documentDTO, signature);
     }
 
@@ -77,11 +76,12 @@ public class CrptApi {
             = "https://postman-echo.com/post"; // тест клиента
 
     HttpClient client = HttpClient.newHttpClient();
-    //********************************************************
+    //**********************************************************************************************
 
     /**
      * Метод для создания документа на основе переданного объекта DocumentDTO.
      * Отправляет его на удалённый сервер с использованием подписи для авторизации.
+     *
      * @param documentDTO объект DocumentDTO, содержащий информацию о документе
      * @param signature   строка, представляющая собой подпись для авторизации
      */
@@ -127,11 +127,12 @@ public class CrptApi {
         }
     }
 
-    //*********************************************************************************************************************
+    //******************************************************************************************************************
 //*************************************************FileService*********************************************************
     public class FileService {
         /**
          * Метод для сохранения JSON-представления документа в файл.
+         *
          * @param jsonDoc JSON-представление документа
          * @return true, если сохранение прошло успешно, иначе false
          */
@@ -146,6 +147,7 @@ public class CrptApi {
         }
     }
 
+    //************************************************************************************************************
     //************************************** DocumentService *****************************************************
     public class DocService {
         private final Mapper mapper = new Mapper();
@@ -155,6 +157,7 @@ public class CrptApi {
 
         /**
          * Метод для создания JSON-документа на основе объекта DocumentDTO.
+         *
          * @param documentDto объект типа DocumentDTO
          * @return JSON документ
          */
@@ -172,6 +175,7 @@ public class CrptApi {
 
         /**
          * Метод для оздания документа через маппер из DocumentDTO
+         *
          * @param documentDTO
          * @return
          */
@@ -181,6 +185,7 @@ public class CrptApi {
 
         /**
          * Метод добавления нового продукта в лист документа
+         *
          * @param productDTO
          * @param documentDTO
          * @return
@@ -201,13 +206,14 @@ public class CrptApi {
         }
 
     }
-//********************************** Mapper *****************************************************
-
+    //******************************************************************************************************************
+//********************************** Mapper ****************************************************************************
     private class Mapper {
         private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         /**
          * Метод для преобразования объекта DocumentDTO в объект Document
+         *
          * @param documentDTO
          * @return new Document()
          */
@@ -229,6 +235,7 @@ public class CrptApi {
 
         /**
          * Метод для создания списка объектов типа Product на основе списка объектов типа ProductDTO.
+         *
          * @param productsDtoList список объектов типа ProductDTO
          * @return список объектов типа Product
          */
@@ -243,6 +250,7 @@ public class CrptApi {
 
         /**
          * Метод для преобразования объекта Document в объект DocumentDTO
+         *
          * @param document
          * @return new DocumentDTO()
          */
@@ -264,6 +272,7 @@ public class CrptApi {
 
         /**
          * Метод для создания списка объектов типа ProductDTO на основе списка объектов типа Product.
+         *
          * @param productsList список объектов типа Product
          * @return список объектов типа ProductDTO
          */
@@ -279,6 +288,7 @@ public class CrptApi {
 
         /**
          * Метод для преобразования объекта Product в объект ProductDTO
+         *
          * @param product
          * @return new ProductDTO()
          */
@@ -297,6 +307,7 @@ public class CrptApi {
 
         /**
          * Метод для преобразования объекта ProductDTO в объект Product
+         *
          * @param productDTO
          * @return new Product()
          */
@@ -316,6 +327,7 @@ public class CrptApi {
 
     /**
      * Метод для создания Description из DocumentDTO для дальнейшей отправки в теле запроса в методе CreateDoc()
+     *
      * @param documentDTO
      * @return
      */
@@ -336,7 +348,7 @@ public class CrptApi {
                 documentDTO.getReg_number()
         );
     }
-
+//**********************************************************************************************************************
     //************************************************ DTO *************************************************************
     @Data
     @AllArgsConstructor
@@ -395,6 +407,7 @@ public class CrptApi {
         private String uitu_code;
     }
 
+    //******************************************************************************************************************
     //******************************************** BaseClasses ********************************************************
     @Data
     @AllArgsConstructor
@@ -420,7 +433,6 @@ public class CrptApi {
         private LocalDate reg_date; // дата регистрации документа
         private String reg_number; // регистрационный номер
     }
-
 
     @Data
     @NoArgsConstructor
